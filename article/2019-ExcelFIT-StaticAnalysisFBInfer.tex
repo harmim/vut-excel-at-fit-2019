@@ -30,21 +30,21 @@
 \definecolor{darkgreen}{RGB}{53, 142, 5}
 
 \lstset{
-	backgroundcolor=\color{white},
-	basicstyle=\footnotesize\tt,
-	language=C,
-	showspaces=false,
-	showtabs=false,
-	tabsize=4,
-	keepspaces=true,
-	escapeinside={<@}{@>}
+    backgroundcolor=\color{white},
+    basicstyle=\footnotesize\tt,
+    language=C,
+    showspaces=false,
+    showtabs=false,
+    tabsize=4,
+    keepspaces=true,
+    escapeinside={<@}{@>}
 }
 
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	REVIEW vs. FINAL VERSION
+%   REVIEW vs. FINAL VERSION
 %--------------------------------------------------------
 
 %   LEAVE this line commented out for the REVIEW VERSIONS
@@ -53,13 +53,13 @@
 
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	PDF CUSTOMIZATION
+%   PDF CUSTOMIZATION
 %--------------------------------------------------------
 
 \hypersetup{
-	pdftitle = {Scalable Static Analysis Using Facebook Infer},
-	pdfauthor = {Dominik Harmim, Vladimír Marcin, Ondřej Pavela},
-	pdfkeywords = {
+    pdftitle = {Scalable Static Analysis Using Facebook Infer},
+    pdfauthor = {Dominik Harmim, Vladimír Marcin, Ondřej Pavela},
+    pdfkeywords = {
         Facebook Infer, Static Analysis, Abstract Interpretation,
         Atomicity Violation, Concurrent Programs, Performance,
         Worst-Case Cost, Deadlock
@@ -68,7 +68,7 @@
 
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	ARTICLE INFORMATION
+%   ARTICLE INFORMATION
 %--------------------------------------------------------
 
 \ExcelYear{2019}
@@ -78,8 +78,8 @@
 \Authors{Dominik Harmim*, Vladimír Marcin**, Ondřej Pavela***}
 \affiliation{
     \{
-    *\href{mailto:xharmi00@stud.fit.vutbr.cz}{xharmi00}, 
-    **\href{mailto:xmarci10@stud.fit.vutbr.cz}{xmarci10}, 
+    *\href{mailto:xharmi00@stud.fit.vutbr.cz}{xharmi00},
+    **\href{mailto:xmarci10@stud.fit.vutbr.cz}{xmarci10},
     ***\href{mailto:xpavel34@stud.fit.vutbr.cz}{xpavel34}
     \}@stud.fit.vutbr.cz,
     \emph{Faculty of Information Technology, Brno University of Technology}
@@ -112,7 +112,7 @@
 
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	ABSTRACT and TEASER
+%   ABSTRACT and TEASER
 %--------------------------------------------------------
 
 \Abstract{
@@ -125,7 +125,7 @@
     as Coverity or Code Sonar, are often proprietary
     and difficult to openly evaluate
     or extend. \emph{Facebook Infer} offers a~static
-    analysis framework that is open source, extendable, 
+    analysis framework that is open source, extendable,
     and promoting efficient modular
     and incremental analysis. In this work, we propose
     three \emph{inter-procedural} analyzers extending the
@@ -154,7 +154,7 @@
 
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	ARTICLE CONTENTS
+%   ARTICLE CONTENTS
 %--------------------------------------------------------
 
 %--------------------------------------------------------
@@ -174,7 +174,7 @@ in many cases, they can sometimes still miss too
 many errors. An alternative solution is a~\emph{static
 analysis}, which has its own shortcomings as well.
 Like, for example, a~high rate of \emph{false positives}
-and, in particular, quite a~big problem with 
+and, in particular, quite a~big problem with
 \emph{scalability}.
 
 Recently, Facebook has proposed its own solution
@@ -195,15 +195,15 @@ for creating new analyses quickly.
 However, the current version of Infer still misses
 better support, e.g., for \emph{concurrency} or
 \emph{performance-based} bugs. While it provides a~fairly
-advanced \emph{data race} and \emph{deadlock} analyzers, 
-they are limited to Java programs only and fail for 
-C~programs, which require more thorough manipulation with 
+advanced \emph{data race} and \emph{deadlock} analyzers,
+they are limited to Java programs only and fail for
+C~programs, which require more thorough manipulation with
 locks. Moreover, the only performance-based analyzer aims
 to \emph{worst-case execution time} analysis only,
 which does not provide a~wise understanding of
 the programs performance.
 % And while resource bounds analysis and concurrency
-% checkers are not usable for all of the programs, 
+% checkers are not usable for all of the programs,
 % they still can enhance both
 % development process and user experience.
 
@@ -232,13 +232,13 @@ part of the H2020 ECSEL project Aquas.
 \emph{Facebook Infer} is an open-source static
 analysis framework which is able to discover
 various types of bugs of the given program, in
-a~\emph{scalable} manner. 
+a~\emph{scalable} manner.
 % Infer was originally
 % a~standalone analyzer focused on sound verification
 % of absence of memory safety violations.
 %which has made
 %its breakthrough thanks to an influential
-%paper~\cite{infer-biabduction}. 
+%paper~\cite{infer-biabduction}.
 It is a~general \emph{abstract
 interpretation}~\cite{CousotCousot77-1} framework
 focused primarily on finding bugs rather than
@@ -247,7 +247,7 @@ develop new kinds of \emph{compositional} and
 \emph{incremental} analyses based on the notion
 of function \emph{summaries}. In theory, a~summary
 is a~representation of function's preconditions and
-postconditions or effects. In practice , 
+postconditions or effects. In practice ,
 it is a~custom data structure that allows
 users to store arbitrary information resulting
 from function's analysis. Infer does (usually) not
@@ -259,7 +259,7 @@ from its leafs. Hence, a~summary of a~function is
 typically analyzed without knowing its call context.
 % This helps scalability (since summaries computed in
 % different contexts are not distinguished), but it
-% may easily lead to a~loss of precision. 
+% may easily lead to a~loss of precision.
 The summary of a~function is
 then used at all of its call sites. Furthermore,
 thanks to its incrementality, Infer can analyze
@@ -278,10 +278,10 @@ called from them.
 %: a~frontend, an analysis scheduler, and a~collective set of
 %analysis plugins.
 % \begin{figure}[ht]
-% 	\centering
-% 	\includegraphics[scale=0.25]{images/infer/arch.png}
-% 	\caption{Infer's architecture components}
-% 	\label{fig:inf-architecture}
+%   \centering
+%   \includegraphics[scale=0.25]{images/infer/arch.png}
+%   \caption{Infer's architecture components}
+%   \label{fig:inf-architecture}
 % \end{figure}
 
 %The first component, the front-end, compiles input programs
@@ -292,41 +292,41 @@ called from them.
 %The frontend supports multiple languages, so
 %one can write (to some degree) language-independent analyses.
 
-%The second component, the abstract interpreter or 
+%The second component, the abstract interpreter or
 %\textit{command interpreter},
 % \begin{figure}[ht]
-% 	\centering
-% 	\includegraphics[scale=0.25]{images/infer/analysis.png}
-% 	\caption{The interpretation process in Infer}
-% 	\label{fig:infer-interpreter}
+%   \centering
+%   \includegraphics[scale=0.25]{images/infer/analysis.png}
+%   \caption{The interpretation process in Infer}
+%   \label{fig:infer-interpreter}
 % \end{figure}
 %subsequently interprets SIL
 %instructions over input abstract states and produces new
 %output states which are further scheduled for interpretation
-%based on the CFG. 
+%based on the CFG.
 %Its simplified workflow is described in Figure~\ref{fig:infer-interpreter}.
 
-Infer uses a~scheduler which determines the order of 
+Infer uses a~scheduler which determines the order of
 analysis for each procedure based on a~\textit{call graph}.
 It also checks if it is possible to analyze some procedures
-concurrently which allows Infer to run in a~heavily 
+concurrently which allows Infer to run in a~heavily
 parallelized manner.
 In more detail, a~call graph is a~\emph{directed graph}
 describing call dependencies between
 \begin{wrapfigure}{r}{0.23\textwidth}
-	\centering
-	\includegraphics[width=0.23\textwidth]{images/infer/callgraph.png}
-	\caption{A call graph}
-	\label{fig:infer-callgraph}
+    \centering
+    \includegraphics[width=0.23\textwidth]{images/infer/callgraph.png}
+    \caption{A call graph}
+    \label{fig:infer-callgraph}
 \end{wrapfigure}
 procedures. An example of a~call graph is shown in
 Figure~\ref{fig:infer-callgraph}. Using this figure, we can illustrate
-the order of analysis in Infer and its incrementality. 
+the order of analysis in Infer and its incrementality.
 The underlying analyzer starts with leaf functions $\mathtt{P5}$
 and $\mathtt{P6}$
 and then proceeds
 towards the root $\mathtt{P_{MAIN}}$ while respecting
-the dependencies represented by the edges. 
+the dependencies represented by the edges.
 % This order
 % ensures that we will always have a~summary already
 % available when we have to abstractly interpret
@@ -338,10 +338,10 @@ if we modify the function $\mathtt{P3}$, Infer
 will re-analyze only $\mathtt{P3}$,
 $\mathtt{P1}$, and $\mathtt{P_{MAIN}}$.
 
-Infer supports analysis of programs written in multiple 
-languages including C, C++, Objective-C, and Java and provides 
+Infer supports analysis of programs written in multiple
+languages including C, C++, Objective-C, and Java and provides
 a~wide range of analyses, each focusing on different types of bugs,
-such as \textit{Inferbo} (buffer overruns), 
+such as \textit{Inferbo} (buffer overruns),
 \textit{RacerD}~\cite{racerd} (data races),
 or \textit{Starvation} (concurrency starvation and
 selected types of deadlocks).
@@ -358,7 +358,7 @@ considerably more widespread in code, leading
 to a~poor user experience.
 % This kind of bugs is hard to manifest during
 % testing, and so employing static analysis
-% is particularly useful in this case. 
+% is particularly useful in this case.
 Facebook Infer
 currently provides the \emph{cost}
 checker~\cite{cost-checker} only, which implements
@@ -385,16 +385,16 @@ of possible \textit{back jumps} to loop headers, which
 is an useful metric related to
 \textit{asymptotic time complexity} as it corresponds
 to the possible number of executions of instructions
-inside the loop. The main algorithm relies on 
+inside the loop. The main algorithm relies on
 an~abstract program model called
 a~\textit{difference constraint program} (DCP), an example
 of which can be seen in Figure~\ref{fig:foo_dcp}.
-\vspace{-1mm}  
+\vspace{-1mm}
 \begin{lstlisting}[
 caption=A snippet
 that requires amortized complexity
 analysis. The corresponding abstraction is shown in
-Figure~\ref{fig:foo_dcp}. 
+Figure~\ref{fig:foo_dcp}.
 The cost of the outer loop is $3n$,
 label={lst:foo}, mathescape=true]
 void foo(int n):
@@ -573,7 +573,7 @@ T\mathcal{B}(\mathtt{t})\times\mathtt{c}
 \end{linenomath}
 $\mathcal{I}(\tau_v)$ is a~set of transitions that
 increase the value of $\tau_v$ by $\mathtt{c}$. The
-$\mathtt{Resets}(\tau_v)$ 
+$\mathtt{Resets}(\tau_v)$
 represent the possible resets of the local bound $\tau_v$ to some
 arbitrary values which also add to the total amount by
 which it might increase:
@@ -620,9 +620,9 @@ $x \leq \max(m1,m2) + 2n$.
 These invariants are not expressible in common abstract
 domains such as \textit{octagon} or \textit{polyhedra}
 which, would lead to a~less precise result. This approach
-is also \textit{demand-driven} (Figure~\ref{tbl:bound_computation}), 
+is also \textit{demand-driven} (Figure~\ref{tbl:bound_computation}),
 i.e. it only performs necessary recursive calls and does not
-compute all possible invariants. 
+compute all possible invariants.
 For a~full \textit{flow} and \textit{path sensitive}
 algorithm and its extension refer
 to~\cite{loopus-tool}.
@@ -651,32 +651,32 @@ invariant $z \leq n$ simply with the $V\mathcal{B}$
 procedure and infer the bound $n$ for
 the loop $l_3$.
 
-The implementation of $T\mathcal{B}$ and 
-$V\mathcal{B}$ is quite straightforward in 
+The implementation of $T\mathcal{B}$ and
+$V\mathcal{B}$ is quite straightforward in
 a~functional paradigm (OCaml). We first convert
 the native CFG used by Infer into a~DCP used
 by Loopus' abstraction. In particular, we
-leverage the AI framework and symbolically 
+leverage the AI framework and symbolically
 execute the~program yielding a~transition system.
-Further, we had to implement the abstraction 
+Further, we had to implement the abstraction
 algorithm and an algorithm which computes local
 bounds. We further extended the basic algorithm
-with several extensions which improve its precision 
-such as the reasoning based on so called 
+with several extensions which improve its precision
+such as the reasoning based on so called
 \textit{reset chains} or an algorithm that converts
-the standard DCP into a~\textit{flow-sensitive} one 
+the standard DCP into a~\textit{flow-sensitive} one
 by variable renaming. For more details about these
 extensions refer to~\cite{loopus-tool}. The current
 implementation is still limited to intra-procedural
 analysis as the original Loopus. However, we already
 have a~conceptual idea based on the substitution of
 formal parameters in a~symbolic bound expression stored
-in a~summary with the variable bounds of arguments at 
-a~callsite resulting in, albeit less precise, but 
+in a~summary with the variable bounds of arguments at
+a~callsite resulting in, albeit less precise, but
 scalable solution. We should also be able to obtain
 the symbolic return value through the $V\mathcal{B}$
 procedure and then use it at a~call site in a~similar
-way. We are aware that this reasoning is limited to 
+way. We are aware that this reasoning is limited to
 procedures without pointer manipulation but it should
 be a~step in the right direction.
 
@@ -694,7 +694,7 @@ instead of the cost.
 
 \begin{table}[t]
 \centering
-\caption{An experimental evaluation of \textit{Looper}. 
+\caption{An experimental evaluation of \textit{Looper}.
 Benchmarks are \href{https://bitbucket.org/paveon/infer-performance/src/master/examples/Loopus/}{ publicly available}.}
 \def\arraystretch{1}
  \begin{tabular}{|c|r||R{1.3cm}|R{1cm}||R{1.3cm}|R{1cm}|}
@@ -744,7 +744,7 @@ L2D2 works in two phases. In the first phase, it computes a~summary for each fun
 label={deadlock_example}, mathescape=true]
 16 void foo() {
 17     pthread_mutex_lock(<@\textcolor{blue}{\&lock2}@>);
-21 void *thread1($\dots$) { 
+21 void *thread1($\dots$) {
 22     pthread_mutex_lock(<@\textcolor{red}{\&lock1}@>);
      $\hspace{20pt}\vdots$
 26     foo();
@@ -762,7 +762,7 @@ In the second phase, L2D2 looks through all the computed summaries of the analyz
   POSTCONDITION: { lockset={lock2} }
 <@\textbf{thread1(\dots)}@>
   PRECONDITION: { unlocked={lock1, lock2} }
-  POSTCONDITION: { lockset={lock2}, 
+  POSTCONDITION: { lockset={lock2},
     dependencies={lock1->lock2} }
 <@\textbf{thread2(\dots)}@>
   PRECONDITION: { unlocked={lock1, lock2} }
@@ -771,7 +771,7 @@ In the second phase, L2D2 looks through all the computed summaries of the analyz
 \end{lstlisting}
 
 %todo postpone this example after the summaries explanation
-If we run L2D2 on our example, it will report a~possible deadlock due to the cyclic dependency between \texttt{lock1} and \texttt{lock2} that arises if thread 1 holds \texttt{lock1} and waits on \texttt{lock2} and thread 2 holds \texttt{lock2} and waits on \texttt{lock1}. This is caused by dependencies \texttt{lock1$\rightarrow$lock2} and \texttt{lock2$\rightarrow$lock1} in the summaries of \texttt{thread1} and \texttt{thread2} 
+If we run L2D2 on our example, it will report a~possible deadlock due to the cyclic dependency between \texttt{lock1} and \texttt{lock2} that arises if thread 1 holds \texttt{lock1} and waits on \texttt{lock2} and thread 2 holds \texttt{lock2} and waits on \texttt{lock1}. This is caused by dependencies \texttt{lock1$\rightarrow$lock2} and \texttt{lock2$\rightarrow$lock1} in the summaries of \texttt{thread1} and \texttt{thread2}
 (see Listing~\ref{deadlock_example_summary}).
 
 \subsection{Computing Procedure Summaries}
@@ -883,8 +883,8 @@ and time-consuming is then finding and fixing these errors.
 In this section we propose
 an implementation of a~\emph{static analyzer for
 finding atomicity violations}. In particular,
-we concentrate on an \emph{atomic execution 
-of sequences of function calls}, which is often 
+we concentrate on an \emph{atomic execution
+of sequences of function calls}, which is often
 required, e.g., when using certain library calls.
 
 \subsection{Contracts for Concurrency}
@@ -916,8 +916,8 @@ illustrated in Listing~\ref{list:contracts}. The contract
 for this specific scenario contains
 clause $ \Varrho_1 $,~which is defined as follows:
 \\[0.4em]
-\centerline{$ 
-    (\Varrho_1)\ \text{\texttt{index\_of~set}} 
+\centerline{$
+    (\Varrho_1)\ \text{\texttt{index\_of~set}}
 $}
 \\[0.4em]
 Clause $ \Varrho_1 $~specifies that every execution
@@ -966,7 +966,7 @@ locks for a~\emph{synchronization of concurrent
 threads}.
 
 In Facebook Infer there is already implemented
-an analysis called 
+an analysis called
 \href{https://fbinfer.com/docs/checkers-bug-types.html\#LOCK_CONSISTENCY_VIOLATION}{
     Lock Consistency Violation
 },
@@ -1068,7 +1068,7 @@ produces the following sequences:
 $}
 \\[0.4em]
 The strikethrough of the functions \texttt{f1}
-and \texttt{f3} denotes a~removal of 
+and \texttt{f3} denotes a~removal of
 already recorded function calls in the
 \textbf{A}~and~\textbf{B}~sequences.
 The strikethrough of the entire sequence
@@ -1119,7 +1119,7 @@ see, when calling an already analysed function, one
 plugs all the sequences from the second component
 of its summary into the current
 \textbf{A}~or~\textbf{B}~sequence.
-So the analysis of the function 
+So the analysis of the function
 \texttt{h}~produces the following sequence:
 $
     \text{\texttt{f1} \texttt{g} \sout{\texttt{f1}} \texttt{f2} \texttt{f3}}
@@ -1193,11 +1193,11 @@ For instance, assume the functions
 \texttt{g}~and~\texttt{h}~from
 Listing~\ref{list:atom-phase2}.
 The set of atomic sequences of the
-function \texttt{g}~is 
-\{(\texttt{f2}~\texttt{f3})\}. In the function 
-\texttt{h},~an atomicity violation is detected 
-because the functions 
-\texttt{f2}~and~\texttt{f3}~are not called 
+function \texttt{g}~is
+\{(\texttt{f2}~\texttt{f3})\}. In the function
+\texttt{h},~an atomicity violation is detected
+because the functions
+\texttt{f2}~and~\texttt{f3}~are not called
 atomically (under a~lock).
 
 \begin{lstlisting}[
@@ -1242,7 +1242,7 @@ tuning \textbf{Phase~1} as well.
 %managed to finish the benchmark in less than 1\,\%
 %of the time needed by the CPROVER
 %tool. The first phase of \emph{Atomer}, an
-%atomicity violations analyzer, was successfully verified 
+%atomicity violations analyzer, was successfully verified
 %on a~set of sample programs created for this purpose.
 %The second phase is a~work in the progress.
 
@@ -1266,7 +1266,7 @@ for the support received from the H2020 ECSEL project Aquas.
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
-%	REFERENCE LIST
+%   REFERENCE LIST
 %--------------------------------------------------------
 %--------------------------------------------------------
 \phantomsection
