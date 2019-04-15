@@ -19,15 +19,21 @@
 
 \newcommand{\tsf}[1]{{\color{cyan}TsF: #1}}
 
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{%
+    >{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}%
+}
 
-\renewcommand\vdots{%
-  \vbox{\baselineskip3pt\lineskiplimit0pt\kern1pt\hbox{.}\hbox{.}\hbox{.}\kern-1pt}}
+\renewcommand\vdots{\vbox{%
+    \baselineskip3pt\lineskiplimit0pt\kern1pt%
+    \hbox{.}\hbox{.}\hbox{.}\kern-1pt%
+}}
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}[thm]{Lemma}
 
 \definecolor{darkgreen}{RGB}{53, 142, 5}
+\newcommand{\bad}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand{\good}[1]{\textcolor{darkgreen}{\textbf{#1}}}
 
 \lstset{
     backgroundcolor=\color{white},
@@ -49,7 +55,7 @@
 
 %   LEAVE this line commented out for the REVIEW VERSIONS
 %   UNCOMMENT this line to get the FINAL VERSION
-%\ExcelFinalCopy
+\ExcelFinalCopy
 
 %--------------------------------------------------------
 %--------------------------------------------------------
@@ -77,12 +83,15 @@
 
 \Authors{Dominik Harmim*, Vladimír Marcin**, Ondřej Pavela***}
 \affiliation{
-    \{
+    \{%
     *\href{mailto:xharmi00@stud.fit.vutbr.cz}{xharmi00},
     **\href{mailto:xmarci10@stud.fit.vutbr.cz}{xmarci10},
-    ***\href{mailto:xpavel34@stud.fit.vutbr.cz}{xpavel34}
+    ***\href{mailto:xpavel34@stud.fit.vutbr.cz}{xpavel34}%
     \}@stud.fit.vutbr.cz,
-    \emph{Faculty of Information Technology, Brno University of Technology}
+    \emph{%
+        Faculty of Information Technology, Brno University
+        of Technology%
+    }
 }
 
 \Keywords{
@@ -98,15 +107,16 @@
 
 \Supplementary{
     \href{https://bitbucket.org/paveon/infer-performance/src/master}{
-        Looper Repository
+        Looper Repository***
     }
     --- \href{
-        https://pajda.fit.vutbr.cz/xmarci10/fbinfer_concurrency/tree/master
+        https://pajda.fit.vutbr.cz/xmarci10/fbinfer_concurrency/%
+        tree/master
     }{
-        L2D2 Repository
+        L2D2 Repository**
     }
     --- \href{https://github.com/harmim/infer/tree/atomicity}{
-        Atomer Repository
+        Atomer Repository*
     }
 }
 
@@ -128,21 +138,21 @@
     analysis framework that is open source, extendable,
     and promoting efficient modular
     and incremental analysis. In this work, we propose
-    three \emph{inter-procedural} analyzers extending the
+    three \emph{inter-procedural} analysers extending the
     capabilities of Facebook Infer:
     \emph{Looper} (a~resource bounds analyser),
-    \emph{L2D2} (a~low-level deadlock detector) and
+    \emph{L2D2} (a~low-level deadlock detector), and
     \emph{Atomer} (an atomicity violation analyser).
-    We evaluated our analyzers on both smaller
+    We evaluated our analysers on both smaller
     hand-crafted examples as well as publicly available
     benchmarks derived from real-life low-level programs
     and obtained encouraging results. In particular,
     L2D2 attained 100\,\% detection rate and
     11\,\% false positive rate on an extensive benchmark
-    of hundreds functions and millions of lines of code.
+    of hundreds of functions and millions of lines of code.
 }
 
-% \Teaser{\TeaserImage{images/teaser.pdf}}
+% \Teaser{\TeaserImage{...}}
 
 %--------------------------------------------------------
 %--------------------------------------------------------
@@ -185,20 +195,20 @@ called \emph{Facebook Infer}\,---\,a~highly
 \emph{inter-procedural} analyses. Facebook Infer is still
 under development, but it is in everyday use in
 Facebook (and several other companies, such as
-Spotify, Uber, Mozilla and others) and it already
+Spotify, Uber, Mozilla, and others) and it already
 provides many checkers for various kinds of bugs,
 e.g., for verification of buffer overflow, thread
-safety or resource leakage. However, equally
+safety, or resource leakage. However, equally
 importantly, it provides a~suitable framework
 for creating new analyses quickly.
 
 However, the current version of Infer still misses
 better support, e.g., for \emph{concurrency} or
 \emph{performance-based} bugs. While it provides a~fairly
-advanced \emph{data race} and \emph{deadlock} analyzers,
+advanced \emph{data race} and \emph{deadlock} analysers,
 they are limited to Java programs only and fail for
 C~programs, which require more thorough manipulation with
-locks. Moreover, the only performance-based analyzer aims
+locks. Moreover, the only performance-based analyser aims
 to \emph{worst-case execution time} analysis only,
 which does not provide a~wise understanding of
 the programs performance.
@@ -208,18 +218,18 @@ the programs performance.
 % development process and user experience.
 
 In particular, we propose to extend Facebook Infer
-with three analyzers: \emph{Looper}, a~resource
+with three analysers: \emph{Looper}, a~resource
 bounds analyser; \emph{L2D2}, a~lightweight
 deadlock checker; and \emph{Atomer}, an atomicity
 violation checker working on the level of sequence of
-method calls. In experimental evaluation, we show
+function calls. In experimental evaluation, we show
 encouraging results, when even our immature
-implementation could detect both concurrency
+implementation could detect concurrency
 property violations and infer precise bounds for
 selected benchmarks, including rather large
 benchmarks based on real-life code. The development
 of these checkers has been discussed several times
-with developers of Facebook Infer, and it is integral
+with the developers of Facebook Infer, and it is an integral
 part of the H2020 ECSEL project Aquas.
 
 %--------------------------------------------------------
@@ -230,11 +240,11 @@ part of the H2020 ECSEL project Aquas.
 \label{sec:infer}
 
 \emph{Facebook Infer} is an open-source static
-analysis framework which is able to discover
+analysis framework, implemented in OCaml, which is able to discover
 various types of bugs of the given program, in
 a~\emph{scalable} manner.
 % Infer was originally
-% a~standalone analyzer focused on sound verification
+% a~standalone analyser focused on sound verification
 % of absence of memory safety violations.
 %which has made
 %its breakthrough thanks to an influential
@@ -247,22 +257,24 @@ develop new kinds of \emph{compositional} and
 \emph{incremental} analyses based on the notion
 of function \emph{summaries}. In theory, a~summary
 is a~representation of function's preconditions and
-postconditions or effects. In practice ,
+postconditions or effects. In practice,
 it is a~custom data structure that allows
 users to store arbitrary information resulting
 from function's analysis. Infer does (usually) not
 compute the summaries during a~run of the analysis
-along the control flow graph as done in older
-analyzers. Instead, it analyzes a~program
+along the \emph{Control Flow Graph} (CFG) as is
+done in classical analysers based on the ideas
+from~\cite{Reps:1995:PID:199448.199462} and~\cite{Sharir:1981:CallStrings}.
+Instead, it analyses a~program
 \emph{function-by-function along the call tree}, starting
 from its leafs. Hence, a~summary of a~function is
-typically analyzed without knowing its call context.
+typically analysed without knowing its call context.
 % This helps scalability (since summaries computed in
 % different contexts are not distinguished), but it
 % may easily lead to a~loss of precision.
-The summary of a~function is
+The summary of the function is
 then used at all of its call sites. Furthermore,
-thanks to its incrementality, Infer can analyze
+thanks to its incrementality, Infer can analyse
 individual code changes instead of the whole project,
 which is more suitable for large and quickly changing
 codebases where the conventional batch analysis is
@@ -286,8 +298,8 @@ called from them.
 
 %The first component, the front-end, compiles input programs
 %into the Smallfoot Intermediate
-%Language (SIL) in a~form of a~Control
-%Flow Graph (CFG). Each analyzed procedure has its own
+%Language (SIL) in a~form of the CFG.
+%Each analysed procedure has its own
 %CFG representation.
 %The frontend supports multiple languages, so
 %one can write (to some degree) language-independent analyses.
@@ -304,25 +316,26 @@ called from them.
 %instructions over input abstract states and produces new
 %output states which are further scheduled for interpretation
 %based on the CFG.
-%Its simplified workflow is described in Figure~\ref{fig:infer-interpreter}.
+%Its simplified workflow is described in
+%Figure~\ref{fig:infer-interpreter}.
 
 Infer uses a~scheduler which determines the order of
-analysis for each procedure based on a~\textit{call graph}.
-It also checks if it is possible to analyze some procedures
-concurrently which allows Infer to run in a~heavily
-parallelized manner.
-In more detail, a~call graph is a~\emph{directed graph}
-describing call dependencies between
+analysis of individual functions based on a~\textit{call graph}.
+It also checks if it is possible to analyse some functions
+concurrently, which allows Infer to run in a~heavily
+parallelized manner. In more detail, a~call
 \begin{wrapfigure}{r}{0.23\textwidth}
     \centering
     \includegraphics[width=0.23\textwidth]{images/infer/callgraph.png}
     \caption{A call graph}
     \label{fig:infer-callgraph}
 \end{wrapfigure}
-procedures. An example of a~call graph is shown in
+graph is a~\emph{directed graph}
+describing call dependencies
+between functions. An example of a~call graph is shown in
 Figure~\ref{fig:infer-callgraph}. Using this figure, we can illustrate
 the order of analysis in Infer and its incrementality.
-The underlying analyzer starts with leaf functions $\mathtt{P5}$
+The underlying analyser starts with the leaf functions $\mathtt{P5}$
 and $\mathtt{P6}$
 and then proceeds
 towards the root $\mathtt{P_{MAIN}}$ while respecting
@@ -333,9 +346,9 @@ the dependencies represented by the edges.
 % a~nested function call during our analysis.
 Each subsequent code change then triggers
 a~re-analysis of the directly affected functions only
-as well as all functions up the call chain. For example,
-if we modify the function $\mathtt{P3}$, Infer
-will re-analyze only $\mathtt{P3}$,
+as well as a~re-analysis of all the functions up the call chain.
+For example, if we modify the function $\mathtt{P3}$, Infer
+will re-analyse only $\mathtt{P3}$,
 $\mathtt{P1}$, and $\mathtt{P_{MAIN}}$.
 
 Infer supports analysis of programs written in multiple
@@ -350,52 +363,50 @@ selected types of deadlocks).
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
-\section{Worst-Case Cost Analyzer}
-\label{sec:worst-case-analyzer}
+\section{Worst-Case Cost Analyser}
+\label{sec:worst-case-analyser}
 
 Recently, performance issues have become
 considerably more widespread in code, leading
-to a~poor user experience.
-% This kind of bugs is hard to manifest during
-% testing, and so employing static analysis
-% is particularly useful in this case.
-Facebook Infer
+to a~poor user experience. Facebook Infer
 currently provides the \emph{cost}
 checker~\cite{cost-checker} only, which implements
-a~\emph{worst-case execution time}
-complexity analysis (\emph{WCET}). However, this
-analysis provides a~numerical bound
-on the number of executions of the program
-only, which can be hard to interpret, and,
-above all, it is quite imprecise for more complex
-algorithms, e.g., requiring amortized reasoning.
+a~\emph{worst-case execution time} analysis
+(\emph{WCET}). However, this analysis provides
+a~numerical bound on the time required for the
+execution of a~program only, which can be hard
+to interpret, and, above all, it is quite
+imprecise for more complex algorithms, e.g.,
+requiring amortized reasoning.
 Loopus~\cite{loopus-tool} is a~powerful resource
-bounds analyzer, which, to the best of our knowledge,
-is the only one that can handle
-\emph{amortized complexity analysis} for a~broad
-range of programs. However, it is limited to
-intra-procedural analysis only, and the tool itself
-does not scale well. Hence, recasting
-the powerful analysis of Loopus within Infer
-could enable a~more efficient resource bounds
-analysis.
+bounds analyser, which, to the best of our
+knowledge, is the only one that can handle
+\emph{amortized complexity analysis} for
+a~broad range of programs. However, it is
+limited to intra-procedural analysis only,
+and the tool itself without an incremental
+framework is not suitable for large and quickly
+changing codebases. Hence, we implemented
+\textit{Looper} -- analyser that recasts the
+powerful analysis of Loopus within Infer which
+enables the possibility for a~more efficient
+resource bounds analysis.
 
 Bounds inferred by Loopus refer to the number
 of possible \textit{back jumps} to loop headers, which
 is an useful metric related to
 \textit{asymptotic time complexity} as it corresponds
 to the possible number of executions of instructions
-inside the loop. The main algorithm relies on
+inside a~loop. The main algorithm relies on
 an~abstract program model called
 a~\textit{difference constraint program} (DCP), an example
 of which can be seen in Figure~\ref{fig:foo_dcp}.
 \vspace{-1mm}
 \begin{lstlisting}[
-caption=A snippet
-that requires amortized complexity
-analysis. The corresponding abstraction is shown in
-Figure~\ref{fig:foo_dcp}.
-The cost of the outer loop is $3n$,
+caption=A snippet requiring amortized complexity
+analysis. The DCP abstraction is shown in
+Figure~\ref{fig:foo_dcp}. `*' denotes non-determinism.
+Total cost: $3n$,
 label={lst:foo}, mathescape=true]
 void foo(int n):
     int i = n, j = 0, z = 0;
@@ -519,10 +530,11 @@ inequalities.}
 \label{fig:foo_dcp}
 \end{subfigure}
 \caption{}
+\label{fig:loopus_example}
 \end{figure*}
 
 Each transition $\tau$ of a~DCP has
-a~\textit{local bound} $\tau_{v}$, i.e. a~variable
+a~\textit{local bound} $\tau_{v}$, i.e., a~variable
 $v$ that \textit{locally} limits the number of
 executions of the transition $\tau$. For example, the variable $j$ in
 Figure~\ref{fig:foo_dcp} limits the number of consecutive
@@ -533,7 +545,7 @@ reasoning about \textit{how often} and
 \textit{by how much} might the local bound of
 a~transition $\tau$ increase, which affects
 the number of executions of $\tau$. The computation
-interleaves two computations:
+interleaves calls to two procedures:
 \vspace{-2.5mm}
 \begin{enumerate}
     \item $V\mathcal{B}$\,--\,computes
@@ -544,7 +556,7 @@ interleaves two computations:
     \item $T\mathcal{B}$\,--\,computes a~bound on the
     number of times that a~transition $\tau$ can be
     executed. Transitions that are not part of any
-    loop have bound of $1$.
+    loop have the transition bound $1$.
 \vspace{-2.5mm}
 \end{enumerate}
 The $T\mathcal{B}$ procedure is defined in the following
@@ -571,12 +583,13 @@ T\mathcal{B}(\mathtt{t})\times\mathtt{c}
 \label{eq:incr_procedure}
 \end{equation*}
 \end{linenomath}
-$\mathcal{I}(\tau_v)$ is a~set of transitions that
-increase the value of $\tau_v$ by $\mathtt{c}$. The
-$\mathtt{Resets}(\tau_v)$
-represent the possible resets of the local bound $\tau_v$ to some
-arbitrary values which also add to the total amount by
-which it might increase:
+$\mathcal{I}(\tau_v)$ is the set of transitions
+$\mathtt{t}$ that increase the value of $\tau_v$
+by $\mathtt{c}$. $\mathtt{Resets}(\tau_v)$
+represent the possible resets of the local bound
+$\tau_v$ to some arbitrary values which also add
+to the total amount by which $\tau_v$ and
+consequently $T\mathcal{B}(\tau)$ might increase:
 \begin{linenomath}
 \begin{equation*}
 \mathtt{Resets}(\tau_v)=
@@ -587,10 +600,10 @@ T\mathcal{B}(\mathtt{t})\times
 \label{eq:resets_procedure}
 \end{equation*}
 \end{linenomath}
-Above, $\mathcal{R}(\tau_v)$ is a~set of transitions
-that reset the value of the local bound $\tau_v$ to
-$\mathtt{a} + \mathtt{c}$ where $\mathtt{a}$ is
-a~variable.
+Above, $\mathcal{R}(\tau_v)$ is the set of transitions
+$\mathtt{t}$ that reset the value of the local bound
+$\tau_v$ to $\mathtt{a} + \mathtt{c}$ where $\mathtt{a}$
+is a~variable.
 
 The remaining $V\mathcal{B}(\mathtt{v})$ procedure
 is defined as:
@@ -604,30 +617,29 @@ V\mathcal{B}(\mathtt{a}) + \mathtt{c})
 \end{equation*}
 \end{linenomath}
 It picks the maximal value of all possible resets of
-the $\mathtt{v}$ as an initial value which is
-increased by the value of
-$\mathtt{Incr(v)}$. Note that the procedure returns
-$\mathtt{v}$ itself if it is a~program parameter or
-a~numeric constant.
+$\mathtt{v}$ as the initial value and increases it by
+the value of $\mathtt{Incr(v)}$. Note that the
+procedure returns $\mathtt{v}$ itself if it is
+a~program parameter or a~numeric constant.
 
 The complete bound algorithm is then
-the mutual recursion of the procedures $T\mathcal{B}$ and
-$V\mathcal{B}$. The main reason why this approach scales
-so well is \textit{local} reasoning. Loopus does not
-rely on any global program analysis and is able to
-obtain complex invariants such as
-$x \leq \max(m1,m2) + 2n$.
-These invariants are not expressible in common abstract
-domains such as \textit{octagon} or \textit{polyhedra}
-which, would lead to a~less precise result. This approach
-is also \textit{demand-driven} (Figure~\ref{tbl:bound_computation}),
-i.e. it only performs necessary recursive calls and does not
-compute all possible invariants.
-For a~full \textit{flow} and \textit{path sensitive}
-algorithm and its extension refer
-to~\cite{loopus-tool}.
+the mutual recursion of the procedures $T\mathcal{B}$
+and $V\mathcal{B}$. The main reason why Loopus scales
+so well with this approach is \textit{local} reasoning:
+it does not rely on any global program  analysis and
+is able to obtain complex invariants  such as
+$x \leq \max(m1,m2) + 2n$. These invariants
+are not expressible in common abstract domains such
+as \textit{octagon} or \textit{polyhedra}, which
+would lead to a~less precise result. This approach
+is also \textit{demand-driven}
+(Figure~\ref{tbl:bound_computation}), i.e. it only
+performs necessary recursive calls and does not
+compute all possible invariants. For a~full
+\textit{flow} and \textit{path sensitive} algorithm
+and its extension refer to~\cite{loopus-tool}.
 
-Table~\ref{tbl:bound_computation} presents
+Figure~\ref{tbl:bound_computation} presents an
 example computation of the transition bound of
 $\tau_5$ from the DCP in Figure~\ref{fig:foo_dcp},
 which corresponds to Listing~\ref{lst:foo}. This code
@@ -635,7 +647,7 @@ demonstrates
 the need for amortized complexity analysis as the
 worst-case cost of the $l_2$ loop can indeed be
 $n$. However, its amortized cost is $1$ as the
-total number of iterations (total cost) is also equal
+total number of iterations of $l_2$ (total cost) is also equal
 to $n$ due to the local bound $j$, which is bounded by
 $n$. Loopus is able to obtain the bound of $n$ instead
 of $n^2$ for the inner loop $l_2$ unlike many other tools.
@@ -648,7 +660,7 @@ $z \leq \mathtt{expr}(n)$ where $\mathtt{expr}(n)$
 denotes an expression over program parameters,
 $n$ in this case. Loopus is able to obtain the
 invariant $z \leq n$ simply with the $V\mathcal{B}$
-procedure and infer the bound $n$ for
+procedure and to infer the bound $n$ for
 the loop $l_3$.
 
 The implementation of $T\mathcal{B}$ and
@@ -662,14 +674,14 @@ Further, we had to implement the abstraction
 algorithm and an algorithm which computes local
 bounds. We further extended the basic algorithm
 with several extensions which improve its precision
-such as the reasoning based on so called
+such as a~reasoning based on so called
 \textit{reset chains} or an algorithm that converts
 the standard DCP into a~\textit{flow-sensitive} one
 by variable renaming. For more details about these
-extensions refer to~\cite{loopus-tool}. The current
+extensions, refer to~\cite{loopus-tool}. The current
 implementation is still limited to intra-procedural
 analysis as the original Loopus. However, we already
-have a~conceptual idea based on the substitution of
+have a~conceptual idea based on substitution of the
 formal parameters in a~symbolic bound expression stored
 in a~summary with the variable bounds of arguments at
 a~callsite resulting in, albeit less precise, but
@@ -677,25 +689,23 @@ scalable solution. We should also be able to obtain
 the symbolic return value through the $V\mathcal{B}$
 procedure and then use it at a~call site in a~similar
 way. We are aware that this reasoning is limited to
-procedures without pointer manipulation but it should
+functions without pointer manipulation but it should
 be a~step in the right direction.
 
 Table~\ref{tbl:loopus_evaluation} presents experimental
 results of our current implementation on selected
-examples. We compared the results of \textit{Looper}
-(Loopus in Infer) with the \textit{Cost} analyzer
+examples from the dissertation~\cite{loopus-tool}.
+We compared the results of \textit{Looper}
+(Loopus in Infer) with the \textit{Cost} analyser
 mentioned in the introduction of this section.
 For \textit{Cost} we have simplified the reported
 bounds to the worst-case asymptotic complexity
 instead of the cost.
 
-\newcommand{\bad}[1]{\textcolor{red}{\textbf{#1}}}
-\newcommand{\good}[1]{\textcolor{darkgreen}{\textbf{#1}}}
-
 \begin{table}[t]
 \centering
 \caption{An experimental evaluation of \textit{Looper}.
-Benchmarks are \href{https://bitbucket.org/paveon/infer-performance/src/master/examples/Loopus/}{ publicly available}.}
+Benchmarks are publicly available\protect\footnotemark.}
 \def\arraystretch{1}
  \begin{tabular}{|c|r||R{1.3cm}|R{1cm}||R{1.3cm}|R{1cm}|}
  \hline
@@ -729,18 +739,19 @@ Benchmarks are \href{https://bitbucket.org/paveon/infer-performance/src/master/e
 \label{tbl:loopus_evaluation}
 \vspace{-5mm}
 \end{table}
+\footnotetext{\url{https://bit.ly/2uORslv}}
 
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
-\section{Deadlock Analyzer}
-\label{sec:deadlock-analyzer}
+\section{Deadlock Analyser}
+\label{sec:deadlock-analyser}
 
-According to~\cite{dogru2011modern}, deadlock is perhaps the most common concurrency error that might occur in almost all parallel programming paradigms including both shared-memory and distributed memory. To detect deadlocks during testing is very hard due to many possible interleavings between threads. Of course, one can use extrapolating dynamic analysers and/or techniques such as noise injection or systematic testing~\cite{conErrors} to increase chances of finding deadlocks, but such techniques decrease the scalability of the testing process and can still have problems to discover some errors. That is the reason why many static detectors were created, but most of them are quite heavyweight and do not scale well. However, there are a~few that meet the scalability condition, like the \textit{starvation} analyzer implemented in Facebook Infer. The problem of this analyzer is that it uses a~heuristic based on using the class of the root of the access path of a~lock, and so it does not handle pure C~locks. Also worth mentioning is the RacerX analyzer~\cite{racerx}, which is based on counting so-called \textit{locksets}, i.e., sets of locks currently held. RacerX uses interprocedural, flow-sensitive, and context-sensitive analysis. This means that each function needs to be reanalysed in a~new context, which reduces the scalability. Hence, we have decided to adapt the \textit{lockset analysis} from RacerX to follow principles of Facebook Infer and, this way, create a~new context-insensitive analysis, which will be faster and more scalable. We have implemented this analysis in our \textit{Low-Level Deadlock Detector (L2D2)}, the principle of which will be illustrated by the example in Listing~\ref{deadlock_example} (a~full description of the algorithm with all its optimisations is beyond the scope of this paper).
+According to~\cite{dogru2011modern}, deadlock is perhaps the most common concurrency error that might occur in almost all parallel programming paradigms including both shared-memory and distributed memory. Detecting deadlocks during testing is very hard due to many possible interleavings among threads. Of course, one can use extrapolating dynamic analysers and/or techniques such as noise injection or systematic testing~\cite{conErrors} to increase chances of finding deadlocks, but such techniques decrease the scalability of the testing process and can still have problems discovering some errors. That is the reason why many static detectors were created, but most of them are quite heavy-weight and do not scale well. However, there are few that meet the scalability condition, like the \textit{starvation} analyser implemented in Facebook Infer. But, the problem of this analyser is that it uses a~heuristic based on using the class of the root of the \emph{access path}\footnote{Infer uses access paths for naming heap locations via the paths used to access them, e.g., \texttt{x.f.g} (\texttt{x} is the root).} of a~lock, and so it does not handle pure C~locks. Another, that is worth mentioning, is the RacerX analyser~\cite{racerx}, which is based on counting so-called \textit{locksets}, i.e., sets of locks currently held. RacerX uses interprocedural, flow-sensitive, and context-sensitive analysis. This means that each function needs to be reanalysed in a~new context, which reduces the scalability. Hence, we have decided to develop a~new context-insensitive analysis (only very loosely inspired by RacerX), which will be faster and more scalable. We have implemented this analysis in our \textit{Low-Level Deadlock Detector (L2D2)}, the principle of which will be illustrated by the example in Listing~\ref{deadlock_example} (a~full description of the algorithm with all its optimisations is beyond the scope of this paper).
 
-L2D2 works in two phases. In the first phase, it computes a~summary for each function by looking for lock and unlock events present in the function. An example of a~lock and unlock event is illustrated in Listing~\ref{deadlock_example} at lines 22 and 27. If a~call of an user-defined function appears in the analyzed code during the analysis, like at line 26 of our example, the analyzer is provided with a~summary of the function if available, or the function is analyzed on demand (which effectively leads to analysing the code along the call tree, starting at its leaves as usual in Facebook Infer). The summary is then applied to an abstract state at a~call site. So, in our example, the summary of \texttt{foo} will be applied to the abstract state of \texttt{thread1}. More details on how the summaries look like and how they are computed will be given in Section~\ref{summ_computation}.
-\begin{lstlisting}[float=tp, belowskip=-1.5 \baselineskip, caption= A~simple example capturing a~deadlock between two global locks in the C~language using the POSIX threads execution model.,
+L2D2 works in two phases. In the first phase, it computes a~summary for each function by looking for lock and unlock events present in the function. An example of a~lock and an unlock event is illustrated in Listing~\ref{deadlock_example} at lines 22 and 27. If a~call of a~user-defined function appears in the analysed code during the analysis, like at line 26 of our example, the analyser is provided with a~summary of the function if available. Otherwise, the function is analysed on demand (which effectively leads to analysing the code along the call tree, starting at its leaves, as usual in Facebook Infer). The summary is then applied to an abstract state at the call site. Hence, in our example, the summary of \texttt{foo} will be applied to the abstract state of \texttt{thread1}. More details on what the summaries look like and how they are computed will be given in Section~\ref{summ_computation}.
+\begin{lstlisting}[float=tp, belowskip=-1.5 \baselineskip, caption= A~simple example capturing a~deadlock between two global locks in the C~language using the POSIX threads execution model,
 label={deadlock_example}, mathescape=true]
 16 void foo() {
 17     pthread_mutex_lock(<@\textcolor{blue}{\&lock2}@>);
@@ -754,9 +765,7 @@ label={deadlock_example}, mathescape=true]
      $\hspace{20pt}\vdots$
 36     pthread_mutex_lock(<@\textcolor{red}{\&lock1}@>);
 \end{lstlisting}
-
-In the second phase, L2D2 looks through all the computed summaries of the analyzed program, and concentrates on the so-called \textit{dependencies} that are a~part of the summaries. The dependencies record that some lock got locked at a~moment when another lock was still locked. L2D2 interprets the obtained set of dependencies as a~relation, computes its transitive closure, and reports a~deadlock if some lock depends on itself in the transitive closure.
-\begin{lstlisting}[float=tp, belowskip=-1.5 \baselineskip, label={deadlock_example_summary}, caption=Summaries of the functions in Listing~\ref{deadlock_example}]
+\begin{lstlisting}[float=bp, aboveskip=-1 \baselineskip, label={deadlock_example_summary}, caption=Summaries of the functions in Listing~\ref{deadlock_example}]
 <@\textbf{foo()}@>
   PRECONDITION: { unlocked={lock2} }
   POSTCONDITION: { lockset={lock2} }
@@ -770,21 +779,25 @@ In the second phase, L2D2 looks through all the computed summaries of the analyz
     dependencies={lock2->lock1} }
 \end{lstlisting}
 
+In the second phase, L2D2 looks through all the computed summaries of the analysed program and concentrates on so-called \textit{dependencies} that are part of the summaries. The dependencies record that some lock got locked at a~moment when another lock was still locked. L2D2 interprets the obtained set of dependencies as a~relation, computes its transitive closure, and reports a~deadlock if some lock depends on itself in the transitive closure.
+
 %todo postpone this example after the summaries explanation
 If we run L2D2 on our example, it will report a~possible deadlock due to the cyclic dependency between \texttt{lock1} and \texttt{lock2} that arises if thread 1 holds \texttt{lock1} and waits on \texttt{lock2} and thread 2 holds \texttt{lock2} and waits on \texttt{lock1}. This is caused by dependencies \texttt{lock1$\rightarrow$lock2} and \texttt{lock2$\rightarrow$lock1} in the summaries of \texttt{thread1} and \texttt{thread2}
 (see Listing~\ref{deadlock_example_summary}).
 
-\subsection{Computing Procedure Summaries}
+\subsection{Computing Function Summaries}
 \label{summ_computation}
-Now we describe the structure of the summaries used and the process of computing them. To detect potential deadlocks, we need to record information that will allow us to answer the following questions:
+We now describe the structure of the summaries used and the process of computing them. To detect potential deadlocks, we need to record information that will allow us to answer the following questions:
 \begin{enumerate}[label={(\arabic*)}, topsep=0.4em]
-    \item \label{q1} What is the state of the locks used in the analyzed program at a~given point in the code?
+    \item \label{q1} What is the state of the locks used in the analysed program at a~given point in the code?
     \item \label{q2} Could a~cyclic dependency on pending lock requests occur?
 \end{enumerate}
 
-To answer question~\ref{q1}, we compute sets \textit{lockset} and \textit{unlockset}, which contain the currently locked and unlocked locks, respectively. These sets are a~part of the postconditions of functions and record what locks are locked/unlocked upon returning from a~function, respectively. Further, we also compute sets \textit{locked} and \textit{unlocked} that serve as a~precondition for a~given function and contain locks that should be locked/unlocked before calling this function.
-When analyzing a~function, the sets are manipulated as follows:
-\begin{lstlisting}[mathescape=true, keywordstyle=\ttfamily]
+To answer question~\ref{q1}, we compute sets \textit{lockset} and \textit{unlockset}, which contain the currently locked and the currently unlocked locks, respectively. These sets are a~part of the \textit{postconditions} of functions and record what locks are locked/unlocked upon returning from a~function, respectively. Further, we also compute sets \textit{locked} and \textit{unlocked} that serve as a~\textit{precondition} for a~given function and contain locks that should be locked/unlocked before calling this function.
+When analysing a~function, the sets are manipulated as shown in Figure \ref{summary_rules}.
+
+Each summary contains also a~set of \textit{dependencies} using which we can answer question $\ref{q2}$. Extraction of the dependencies is called upon every lock acquisition and iterates over every lock in the current lockset, emitting the ordering constraint produced by the current acquisition. For example, if \texttt{lock2} is in the current lockset and \texttt{lock1} has just been acquired, the dependency \texttt{lock2$\rightarrow$lock1} will be emitted, as we can see in Listing~\ref{deadlock_example} in the function \texttt{thread2}.
+\begin{lstlisting}[mathescape=true, keywordstyle=\ttfamily, float=tp, belowskip=-1 \baselineskip, label={summary_rules}, caption=Rules for summary computation ]
 <@\textbf{lockset:}@>
   lock(l) $\rightarrow$ lockset := lockset $\cup$ {l}
   unlock(l) $\rightarrow$ lockset := lockset - {l}
@@ -799,22 +812,21 @@ When analyzing a~function, the sets are manipulated as follows:
     locked$_f$ := locked$_f$ $\cup$ {l}
 \end{lstlisting}
 
-Each summary also contains a~set of \textit{dependencies} by using which we can answer the $\ref{q2}^{nd}$~question. Extraction of the dependencies is called on every lock acquisition and iterates over every lock in the current lockset, emitting the ordering constraint produced by the current acquisition. For example, if \texttt{lock2} is in the current lockset and \texttt{lock1} has just been acquired, the dependency \texttt{lock2$\rightarrow$lock1} will be emitted, as we can see in Listing~\ref{deadlock_example} in function \texttt{thread2}.
 
 % todo
-The above described basic computation of the dependencies would, however, be very imprecise and lead to many false alarms. The imprecision is caused by invalid locksets. The main reasons for imprecision of the locksets are imprecision in dealing with conditionals (all outcomes are considered as possible), function calls (missing context), and aliasing (any aliasing is considered to be possible).
+The above described basic computation of the dependencies would, however, be very imprecise and lead to many false alarms. The imprecision is caused by invalid locksets. The main reasons for imprecision of the locksets are imprecision in dealing with conditionals (all outcomes are considered as possible), with function calls (missing context), and with lock aliasing (any aliasing is considered to be possible).
 
-Next, as we mentioned at the beginning of this section, if a~function call appears in the analyzed code, we have to apply a~summary of the function to the abstract state at the callsite. Given a~callee $g$, its lockset $L_g$, unlockset $U_g$, and a~caller $f$, its lockset $L_f$, unlockset $U_f$, and dependencies $D_f$, we:
+Next, as we mentioned in the beginning of this section, if a~function call appears in the analysed code, we have to apply a~summary of the function to the abstract state at the call site. Given a~callee $g$, its lockset $L_g$, unlockset $U_g$, and a~caller $f$, its lockset $L_f$, unlockset $U_f$, and dependencies $D_f$, we:
 \begin{enumerate}[label={(\arabic*)}, wide=0pt, listparindent=1.25em, parsep=0pt, topsep=0.4em]
     \item Update the summary of $g$ by replacing formal parameters with actual ones in case that locks were passed to $g$ as parameters. In the example below, you can notice that \texttt{lock4} will be replaced by \texttt{lock2} in the summary of $g$.
     \item Update the precondition of $f$:\\
-$if(\exists l: l\in unlocked_{g}\wedge l\notin unlockset_{f})$
+$\mathrm{if}(\exists l: l\in unlocked_{g}\wedge l\notin unlockset_{f})$
     \item[]\hspace{20pt}add lock $l$ to $unlocked_{f}$\\
-$if(\exists l: l\in locked_{g}\wedge l\notin lockset_{f})$
+$\mathrm{if}(\exists l: l\in locked_{g}\wedge l\notin lockset_{f})$
     \item[]\hspace{20pt}add lock $l$ to $locked_{f}$
     \item Update $D_f$ by adding new dependencies for all locks in $L_f$ with locks which were locked in $g$.
 
-    However, what happens if all the locks which were acquired in $g$ were also released there, as we can see in the example below.
+    However, a~problem occurs if some of the locks which were acquired in $g$ were also released there. This is illustrated in the example below.
     \begin{lstlisting}[mathescape=true]
 void f():
     pthread_mutex_lock(<@\textcolor{blue}{\&lock2}@>);
@@ -827,7 +839,7 @@ void g(pthread_mutex_t *lock4):
     pthread_mutex_unlock(<@\textcolor{red}{\&lock1}@>);
     pthread_mutex_unlock(<@\textcolor{darkgreen}{\&lock3}@>);
 \end{lstlisting}
-    In that case, $L_g$ will be empty, and we have no information about these locks. To cope with problem, we have yet another set in the summaries whose semantics is similar to the semantics of the lockset except that the unlock statement does not remove locks from it. In our example, this set would contain \texttt{lock3} and \texttt{lock1}, but there is still one problem left. What if the lock from the current lockset was unlocked in the callee before we locked another lock there? Then we will emit the wrong dependency \texttt{lock2$\rightarrow$lock1}. In order to avoid this problem, we create \texttt{unlock$\rightarrow$lock} type dependencies in the summaries, that can be used to safely determine the order of operations in the callee. This finally ensures that the only newly created correct dependency in our example will be \texttt{lock2$\rightarrow$lock3}.
+    In that case, $L_g$ will not contain these locks, and we have no information about them. To cope with problem, we have yet another set in the summaries whose semantics is similar to the semantics of the lockset except that the unlock statement does not remove locks from it. In our example, this set would contain \texttt{lock3} and \texttt{lock1}. Moreover, there is still one problem left. What if the lock from the current lockset was unlocked in the callee before we locked another lock there? Then we would emit the wrong dependency \texttt{lock2$\rightarrow$lock1}. In order to avoid this problem, we create \texttt{unlock$\rightarrow$lock} type dependencies in the summaries, that can be used to safely determine the order of operations in the callee. This finally ensures that the only newly created correct dependency in our example will be \texttt{lock2$\rightarrow$lock3}.
     \item Update $L_f$:
     $L_f = (L_f \setminus U_g) \cup L_g$
     \item Update $U_f$:
@@ -839,12 +851,14 @@ void g(pthread_mutex_t *lock4):
 % For deadlock detection, we use an algorithm that iterates through all the summaries and computes the transitive closure of all dependencies. It records the cyclic lock dependency and displays the results to the user for inspection. Each deadlock (between two locks) is normally reported twice, for each locking event that can be considered a~beginning of the cyclic locking dependency separately. So, in our example in Listing~\ref{deadlock_example}, we will report the deadlock for the first time in function \texttt{thread1} and for the second time in function \texttt{thread2}.
 
 \subsection{Experimental Evaluation}
-We performed our experiments by using a~benchmark of 1002 concurrent C~programs derived from the Debian GNU/Linux distribution.The entire benchmark is available online at \href{https://pajda.fit.vutbr.cz/xmarci10/fbinfer_concurrency/tree/master/infer/tests/codetoanalyze/c/deadlock}{gitlab}. These programs were originally used for an experimental evaluation of Daniel Kroening's static deadlock analyser~\cite{cprover} implemented in the CPROVER framework.
+We performed experiments using a~benchmark of 1002 concurrent C~programs derived from the Debian GNU Linux distribution.The entire benchmark is available online at GitLab\footnote{\url{https://bit.ly/2WJBQLQ}}. These programs were originally used for an experimental evaluation of Daniel Kroening's static deadlock analyser~\cite{cprover} implemented in the CPROVER framework.
 
-This benchmark set consists of 11.4 MLOC. Of all the programs, 994 are deadlock-free, and 8 of them contain a~deadlock. Our experiments were run on a~CORE i7-7700HQ processor at 2.80\,GHz running Ubuntu 18.04 with 64-bit binaries. The CPROVER experiments were run on a~Xeon X5667 at 3\,GHz running Fedora 20 with 64-bit binaries. In case of CPROVER, the memory and CPU time were restricted to 24\,GB and 1800 seconds per benchmark, respectively.
+This benchmark set consists of 11.4 MLOC. Of all the programs, 994 are deadlock-free and 8 of them contain a~deadlock. Our experiments were run on a~CORE i7-7700HQ processor at 2.80\,GHz running Ubuntu 18.04 with 64-bit binaries. The CPROVER experiments were run on a~Xeon X5667 at 3\,GHz running Fedora 20 with 64-bit binaries. In case of CPROVER, the memory and the CPU time were restricted to 24\,GB and 1800 seconds per benchmark, respectively.
 
-Both our analyzer and CPROVER correctly report all 8 potential deadlocks in the benchmarks with known issues. A~comparison of results for deadlock-free programs can be seen in Table~\ref{tbl:DeadlockBanch}.
-\begin{table}[b]
+Both our analyser and CPROVER correctly report all 8 potential deadlocks in the benchmarks with known issues. A~comparison of results for deadlock-free programs can be seen in Table~\ref{tbl:DeadlockBanch}.
+
+As one can see, L2D2 reported false alarms for 104 deadlock-free benchmarks which is by 10 less than CPROVER. A~much larger difference can be seen in cases where it was proved that there was no deadlock. The difference here is 518 examples in favor of our analyser. In case of L2D2, we have 80 compilation errors that were caused by syntax that Infer does not support. The biggest difference between our analyser and CPROVER is the runtime. While our analyser needed approximately 2 hours to perform the experiments, CPROVER needed about 300 hours.
+\begin{table}[t]
 \caption{Results for programs without a~deadlock (t/o\,---\,timed out, m/o\,---\,out of memory)}
 \begin{tabular}{l|r|r|r|r|r}
         & \multicolumn{1}{l|}{\textbf{proved}} & \multicolumn{1}{l|}{alarms} & \multicolumn{1}{l|}{t/o} & \multicolumn{1}{l|}{m/o} & \multicolumn{1}{l}{errors} \\ \hline
@@ -852,36 +866,34 @@ CPROVER & \textbf{292}                        & 114                        & 453
 L2D2    & \textbf{810}                        & 104                        & 0                       & 0                       & 80
 \end{tabular}
 \label{tbl:DeadlockBanch}
-\vspace{-3mm}
+\vspace{-5mm}
 \end{table}
 
-As one can see, L2D2 reported false alarms for 104 deadlock-free benchmarks which is by 10 less than CPROVER. A~much larger difference can be seen in cases where it was proved that there was no deadlock. The difference here is 518 examples in favor of our analyzer. In case of L2D2, we have 80 compilation errors that were caused by syntax that Infer does not support. The biggest difference between our analyzer and CPROVER is the runtime. While our analyzer needed approximately 2 hours to perform the experiments, CPROVER needed about 300 hours.
-
-There is still space for improving our analysis by reducing the number of alarms, which are mainly caused by false dependencies as mentioned in Subsection~\ref{summ_computation} ($4^{th}$ paragraph). So, to eliminate false positives, we need some techniques to eliminate false dependencies. In our implementation of L2D2, we use a~number of heuristics that try to reduce the imprecision. An example is that if a~locking error occurs (double lock acquisition), then L2D2 sets the current lockset to empty, and adds currently acquired lock to the lockset (we can safely tell that this lock is locked), thereby eliminating any dependencies that could result from the locking error. More precise description of these heuristics is beyond the scope of the paper.
+There is still space for improving our analysis by reducing the number of alarms, which are mainly caused by false dependencies as mentioned in Subsection~\ref{summ_computation} ($4^{th}$ paragraph). Hence, to eliminate false positives, we need some techniques to eliminate false dependencies. In our implementation of L2D2, we use a~number of heuristics that try to reduce the imprecision. An example is that if a~locking error occurs (double lock acquisition), then L2D2 sets the current lockset to empty, and adds the currently acquired lock to the lockset (we can safely tell that this lock is locked), thereby eliminating any dependencies that could result from the locking error. More precise description of these heuristics is beyond the scope of the paper.
 
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
 %--------------------------------------------------------
-\section{Atomicity Violations Analyzer}
+\section{Atomicity Violations Analyser}
 
 In \emph{concurrent programs} there are often
-\emph{atomicity requirements} for the execution of specific
+\emph{atomicity requirements} for execution of specific
 sequences of instructions. Violating these requirements
 may cause many kinds of problems, such as an unexpected
 behaviour, exceptions, segmentation faults, or other
 failures. \emph{Atomicity violations} are usually not
 verified by compilers, unlike syntactic or some sorts
 of semantic rules. Atomicity requirements,
-in most cases, are not event documented. It means
+in most cases, are not even documented. It means
 that typically only programmers must take care of
 following these requirements. In general, it is very
 difficult to avoid errors in \emph{atomicity-dependent
 programs}, especially in large projects, and even harder
-and time-consuming is then finding and fixing these errors.
+and time-consuming is finding and fixing these errors.
 
 In this section we propose
-an implementation of a~\emph{static analyzer for
+an implementation of a~\emph{static analyser for
 finding atomicity violations}. In particular,
 we concentrate on an \emph{atomic execution
 of sequences of function calls}, which is often
@@ -895,15 +907,15 @@ The proposal of a~solution is based on the concept of
 in~\cite{atomicity-contracts}. These contracts
 allow one to define \emph{sequences of functions} that are
 required to be \emph{executed atomically}. The proposed
-analyzer itself (\textbf{Atomer}) is able to automatically
-derive candidates for such contracts, and then verify
+analyser itself (\textbf{Atomer}) is able to automatically
+derive candidates for such contracts, and then to verify
 whether the contracts are fulfilled.
 
 In~\cite{atomicity-contracts},
 a~\emph{basic contract} is formally defined as follows.
 Let $ \Sigma_\mathbb{M} $~be a~set of all function names
 of a~software module. A~\emph{contract} is
-a~set $ \mathbb{R} $~of \emph{clauses} where each
+the set $ \mathbb{R} $~of \emph{clauses} where each
 clause $ \Varrho\ \in \mathbb{R} $~is a~regular
 expression over $ \Sigma_\mathbb{M} $.~A~\emph{contract
 violation} occurs if any of the sequences represented by
@@ -940,8 +952,9 @@ void replace(int *array, int a, int b):
 \end{lstlisting}
 
 In~\cite{atomicity-contracts} there is described
-a~proposal and an implementation for a~static
-validation which is based on \emph{grammars} and
+a~proposal and an implementation of a~\emph{static
+validation for finding atomicity violations},
+which is based on \emph{grammars} and
 \emph{parsing trees}. The authors
 of~\cite{atomicity-contracts} implemented
 the stand-alone prototype
@@ -954,23 +967,21 @@ developed. That is why we decided to get inspired
 by~\cite{atomicity-contracts} and reimplement the
 analysis in \emph{Facebook Infer} redesigning it in
 accordance with the principles of Infer, which
-should make it more \emph{scalable}. Due to adapting the
-analysis for the context of Infer, its
-implementation is significantly different in the
-end as presented in
-Sections~\ref{sec:atomicity-phase1}~and~\ref{sec:atomicity-phase2}.
-Further, unlike~\cite{atomicity-contracts},
+should make it more \emph{scalable}. In the end,
+due to adapting the analysis for the context of Infer,
+our implementation is significantly different
+from~\cite{atomicity-contracts} as presented in
+Sections~\ref{sec:atomicity-phase1} and \ref{sec:atomicity-phase2}.
+Furthermore, unlike~\cite{atomicity-contracts},
 the implementation aims at programs written in
 C/C++ languages using \emph{POSIX Threads (Pthreads)}
-locks for a~\emph{synchronization of concurrent
+locks for \emph{synchronisation of concurrent
 threads}.
 
 In Facebook Infer there is already implemented
 an analysis called
-\href{https://fbinfer.com/docs/checkers-bug-types.html\#LOCK_CONSISTENCY_VIOLATION}{
-    Lock Consistency Violation
-},
-which is a~part of \emph{RacerD}~\cite{racerd}.
+\href{https://fbinfer.com/docs/checkers-bug-types.html\#LOCK_CONSISTENCY_VIOLATION}{Lock Consistency Violation},
+which is part of \emph{RacerD}~\cite{racerd}.
 The analysis finds atomicity violations
 for writes/reads on single variables that are
 required to be executed atomically. Atomer is
@@ -1016,7 +1027,7 @@ it should probably be always executed atomically.
 
 The detection of sequences of calls to be
 executed atomically is based on analysing all
-paths through the \emph{control flow graph} of
+paths through the CFG of
 a~function and generating all pairs
 \textbf{(A,~B)} of sets of function
 calls such that: \textbf{A}~is a~\emph{reduced
@@ -1037,20 +1048,20 @@ sequences and of the analysis. The \emph{summary}
 then consists of
 \begin{enumerate*}[label={(\roman*)}]
     \item
-        the set of all the \textbf{B}~sequence
+        the set of all the \textbf{B}~sequences
         and
 
     \item
-        the set of all the \emph{concatenations}
-        \textbf{A.B} of the corresponding
-        \textbf{A}~and~\textbf{B}~sequences.
+        the set of \emph{concatenations} of all
+        the \textbf{A}~and \textbf{B}~sequences
+        with removal of duplicate function calls.
 \end{enumerate*}
 The latter is recorded for the purpose of
 analysing functions higher in the call
-hierarchy since the locks/unlocks can appear
+hierarchy since locks/unlocks can appear
 in such a~higher-level function.
 
-For instance, the analysis of the
+For instance, analysis of the
 function \texttt{g}~from
 Listing~\ref{list:atom-phase1} (assuming
 \emph{Pthreads} locks and existence of the
@@ -1059,30 +1070,48 @@ the type \texttt{pthr\-ead\_mutex\_t})
 produces the following sequences:
 \\[0.4em]
 \centerline{$
-    \text{\texttt{f1} \sout{\texttt{f1}}}
-    (\text{\texttt{f1} \sout{\texttt{f1}} \texttt{f2}}) |
-    \text{\texttt{f1} \sout{\texttt{f1}}}
-    (\text{\texttt{f1} \texttt{f3}}) |
-    \text{\sout{\texttt{f1}}}
-    (\text{\sout{\texttt{f1} \texttt{f3} \texttt{f3}}})
+    \overbrace{
+        \text{\texttt{f1} \sout{\texttt{f1}}}
+    }^\text{\textbf{A\textsubscript{1}}}
+    \overbrace{
+        (\text{\texttt{f1} \sout{\texttt{f1}} \texttt{f2}})
+    }^\text{\textbf{B\textsubscript{1}}} |
+    \overbrace{
+        \text{\texttt{f1} \sout{\texttt{f1}}}
+    }^\text{\textbf{A\textsubscript{2}}}
+    \overbrace{
+        (\text{\texttt{f1} \texttt{f3}})
+    }^\text{\textbf{B\textsubscript{2}}} |
+    \overbrace{
+        \text{\sout{\texttt{f1}}}
+    }^\text{\sout{\textbf{A\textsubscript{3}}}}
+    \overbrace{
+        (\text{\sout{\texttt{f1} \texttt{f3} \texttt{f3}}})
+    }^\text{\sout{\textbf{B\textsubscript{3}}}}
 $}
 \\[0.4em]
-The strikethrough of the functions \texttt{f1}
-and \texttt{f3} denotes a~removal of
+The parentheses are used to indicate an atomic
+sequence. The strikethrough of the functions
+\texttt{f1} and \texttt{f3} denotes a~removal of
 already recorded function calls in the
-\textbf{A}~and~\textbf{B}~sequences.
+\textbf{A}~and \textbf{B}~sequences.
 The strikethrough of the entire sequence
 \texttt{f1}~(\texttt{f1}~\texttt{f3}~\texttt{f3})
-means a~discardence of sequence already
-seen before.
+means discarding sequences already seen before.
 The derivated sets for the
 function \texttt{g}~are then as follows:
 \begin{enumerate*}[label={(\roman*)}, topsep=0.4em]
     \item
-       \{(\texttt{f1}~\texttt{f2})~(\texttt{f1}~\texttt{f3})\},
+       \{(\texttt{f1}~\texttt{f2}),~(\texttt{f1}~\texttt{f3})\}, i.e.,
+       \textbf{B\textsubscript{1}} and \textbf{B\textsubscript{2}},
 
     \item
-        \{\texttt{f1}~\texttt{f2}~\texttt{f3}\}.
+        \{\texttt{f1}~\texttt{f2}~\texttt{f3}\}, i.e.,
+        concatenation of \textbf{A\textsubscript{1}},
+        \textbf{B\textsubscript{1}}, \textbf{A\textsubscript{2}},
+        and \textbf{B\textsubscript{2}} with removal of duplicate
+        function calls.
+
 \end{enumerate*}
 
 \begin{lstlisting}[
@@ -1114,16 +1143,21 @@ Further, we show how the function
 \texttt{h}~from Listing~\ref{list:atom-phase1-nested}
 would be analysed using the result of the analysis of
 the function \texttt{g}.~The result of the analysis
-of the nested function is used as follows. As we can
-see, when calling an already analysed function, one
-plugs all the sequences from the second component
-of its summary into the current
+of the nested function is used as follows. When calling
+an already analysed function, one plugs all the sequences
+from the second component of its summary into the current
 \textbf{A}~or~\textbf{B}~sequence.
 So the analysis of the function
 \texttt{h}~produces the following sequence:
 $
-    \text{\texttt{f1} \texttt{g} \sout{\texttt{f1}} \texttt{f2} \texttt{f3}}
-    (\text{\texttt{g} \texttt{f1} \texttt{f2} \texttt{f3}})
+    \text{
+        \texttt{f1} \texttt{g} \sout{\texttt{f1}}
+        \texttt{f2} \texttt{f3}
+    }
+    (\text{%
+        \texttt{g} \texttt{f1} \texttt{f2}
+        \texttt{f3}%
+    })
 $.
 The derivated sets for the
 function \texttt{h}~are as follows:
@@ -1136,7 +1170,7 @@ function \texttt{h}~are as follows:
 \end{enumerate*}
 
 \begin{lstlisting}[
-    float=tp, belowskip=-1.5 \baselineskip,
+    float=bp, aboveskip=-1 \baselineskip,
     label={list:atom-phase1-nested},
     caption={
         An example of a~code for an
@@ -1164,30 +1198,27 @@ which is used during \textbf{Phase~2},
 described below. There are some
 possibilities for further extending and
 improving \textbf{Phase~1}, e.g.,
-work with nested locks, distinguish the
+working with nested locks, distinguishing the
 different locks used (currently, we do not
 distinguish between the locks at all),
-or extend detection for other types of
-locks for a~synchronization of concurrent
+or extending the detection for other types of
+locks for synchronisation of concurrent
 threads/processes. On the other hand,
 to further enhance the \emph{scalability},
-it seems promising to replace working
+it seems promising to replace working with
 the \textbf{A}~and~\textbf{B}~sequence
-by sets of calls: sacrificing some precision
-but gaining a~speed.
+by working with sets of calls: sacrificing
+some precision but gaining the speed.
 
 \subsection{Detection of Atomicity Violations}
 \label{sec:atomicity-phase2}
 
 In the second phase of the analysis, i.e.,
-when \emph{detecting violations} of the detected
-\emph{sequences of calls assumed to execute
-atomically} from \textbf{Phase~1}, the set
-of atomic sequences from \textbf{Phase~1}
-is taken, and the analysis looks for pairs
-of functions that should be called atomically
-while this is not the case on some path
-through the \emph{control flow graph}.
+when \emph{detecting violations} of the atomic
+sequences obtained from \textbf{Phase~1}, the
+analysis looks for pairs of functions that should
+be called atomically while this is not the case
+on some path through the CFG.
 
 For instance, assume the functions
 \texttt{g}~and~\texttt{h}~from
@@ -1203,9 +1234,7 @@ atomically (under a~lock).
 \begin{lstlisting}[
     float=tp, belowskip=-1.5 \baselineskip,
     label={list:atom-phase2},
-    caption={
-        Atomicity violation
-    }
+    caption={Atomicity violation}
 ]
 void g(void):
     f1();
@@ -1217,10 +1246,10 @@ void h(void):
     f1(); f2(); f3(); f4();
 \end{lstlisting}
 
-An implementation of this phase and its
+Implementation of this phase and its
 experimental evaluation is currently in
-progress. Based on its results, we will
-tuning \textbf{Phase~1} as well.
+progress. Based on the results, we will
+tune \textbf{Phase~1} as well.
 
 %--------------------------------------------------------
 %--------------------------------------------------------
@@ -1229,24 +1258,27 @@ tuning \textbf{Phase~1} as well.
 %\section{Conclusions}
 %\label{sec:Conclusions}
 
-%We presented three analyzers
+%We presented three analysers
 %which we implemented in the \textit{Facebook Infer}
 %framework. \textit{Looper},
-%resource bounds analyzer, was able to infer the precise
+%resource bounds analyser, was able to infer the precise
 %bound in 6 out of 8 of the selected examples used for
 %evaluation of the \textit{Loopus} tool, which inspired our analyser.
-%\textit{L2D2} analyzer, a~deadlock detector in C~programs,
-%was evaluated on a~benchmark derived from real-life programs from the Debian distribution, which was used for an evaluation of the CPROVER-based deadlock detector presented in~\cite{cprover}. L2D2 handled the benchmark with 100\,\% success rate in detection of potential
+%\textit{L2D2} analyser, a~deadlock detector in C~programs,
+%was evaluated on a~benchmark derived from real-life programs from the Debian
+%distribution, which was used for an evaluation of the CPROVER-based
+%deadlock detector presented in~\cite{cprover}. L2D2 handled the benchmark
+%with 100\,\% success rate in detection of potential
 %deadlocks and roughly 11\,\% false positives rate.
 %It demonstrated its scalability as it
 %managed to finish the benchmark in less than 1\,\%
 %of the time needed by the CPROVER
 %tool. The first phase of \emph{Atomer}, an
-%atomicity violations analyzer, was successfully verified
+%atomicity violations analyser, was successfully verified
 %on a~set of sample programs created for this purpose.
 %The second phase is a~work in the progress.
 
-%Our analyzers show potential for further
+%Our analysers show potential for further
 %improvements. Our further work will focus mainly
 %on increasing the accuracy of our methods,
 %and testing them on real-world programs. Furthermore,
@@ -1257,7 +1289,7 @@ tuning \textbf{Phase~1} as well.
 \section*{Acknowledgements}
 We would like to thank our supervisors and
 colleagues from VeriFIT: Tomáš Fiedor,
-Adam Rogalewicz and Tomáš Vojnar. Further, we
+Adam Rogalewicz, and Tomáš Vojnar. Further, we
 would like to thank Nikos Gorogiannis and Sam Blackshear
 from Infer team at Facebook for helpful discussions
 about the development of our checkers. Lastly, we thank

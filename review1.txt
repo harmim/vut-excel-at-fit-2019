@@ -1,0 +1,119 @@
+Zhrnutie:
+---------
+Práca popisuje integráciu troch nových statických analýz do frameworku pre analýzu a verifikáciu programov Facebook Infer. Tieto rozšírenia implementujú existujúce metódy prevzaté z iných nástrojov, ktoré sú upravené tak, aby ich bolo možné použiť v danom frameworku. Konkrétne sa jedná o odvodzovanie amortizovanej zložitosti algoritmov, detekciu uviaznutia a o analýzu porušenia atomicity.
+
+Prínos/zaradenie:
+-----------------
+Jedná sa o vedecko-implementačnú prácu, ktorá vyžadovala naštudovanie, pochopenie a rozšírenie pokročilých vedeckých metód. Ich začlenenie do nástroja Facebook Infer zvýšilo škálovateľnosť týchto metód, čo by mohlo viesť k ich jednoduchšiemu využitiu pri verifikácii praktického software. Pri jednej z metód je zlepšenie škálovateľnosti ukázané aj experimentálne.
+
+Silné stránky:
+--------------
+* Náročná téma.
+* Kvalitne napísaná práca v angličtine.
+* Implementácia vo frameworku zameranom na analýzu a verifikáciu reálnych programov.
+* Pri jednej z metód výborné výsledky experimentov v porovnaní s konkurenčným nástrojom.
+
+Slabé stránky:
+--------------
+* Zriedkavo nezrozumiteľné formulácie.
+* Drobné chyby v angličtine.
+
+Konkrétne doporučenia:
+----------------------
+Hlavní komentáře:
+-------------
+l.62-63: "as done in older analysers" v akých? Chýba aspoň citácia.
+l.111-112: "number of executions of the program only" počet spustení celého programu? Nie náhodou iba konkrétnej časti programu, napr. cyklu?
+l.157,160,163 formule: chýba popis symbolu "t".
+l.160: "of the total amount" čo sa myslí pod total amount? TB(\Tau)?
+l.199: prečo OCaml? Ak to súvisí s FB Infer, bolo by treba to zmieniť v sekcii 2, alebo aspoň na
+tomto mieste.
+Table 1: odkiaľ sa vzali tieto príklady? Vytvorili ste ich, alebo odniekiaľ prevzali? Bolo by vhodné to zmieniť v texte.
+Table 1: "Benchmarks are publicly available". Kde? Pridajte link.
+l.247: nie je mi jasné čo je "access path". Myslí sa tým "file path"?
+l.557: nemala by byť množina (ii) rovná {(f1 f2) (f1 f3)}? Podľa definície sú množiny typu (ii) konkatenácie A.B pre zodpovedajúce A a B. Za zodpovedajúce A a B by som považoval A = f1, B = (f1 f2) a potom A = f1, B = (f1 f3). Alebo sa robí konkatenácia všetkých množín A, B? Táto časť mi nie je úplne jasná (aspoň daný príklad som nepochopil), bolo by dobré to lepšie popísať. Rovnako by som v tejto časti doporučoval používať jednotný formát pre špecifikáciu postupností (niekedy je postupnosť v zátvorkách, inokedy nie). Platí pre celú sekciu.
+
+Drobné chyby v angličtine:
+--------------------------
+Abstrakt: "analyzers" -> "analysers". Podľa zbytku článku som pochopil, že používate skôr britskú angličtinu, ktorá používa "s". Platí aj pre ďalšie výskyty (l.78, 244, 246, 268, 269, 271, 280, 301, 312, 344, 453, 462).
+Abstrakt: Oxford comma pred and/or pri vymenovaní viac ako 2 vecí: "Looper (...), L2D2 (...), and Atomer (...)." Platí aj pre ďalšie výskyty (l.21, 23, 579).
+Abstrakt: "hundreds of functions"
+l.41: "detect both ..." ktoré dve?
+l.46: "the developers of", "it is an integral part"
+l.62: "as is done in older analysers"
+l.67: "the function"
+l.77: "analysis of individual procedures based on"
+l.79: "concurrently, which allows Infer"
+l.89: "with the leaf"
+l.96: "as well as a re-analysis of all the functions up"
+l.110: "worst-case execution time analysis"
+l.127: "inside a loop"
+l.138: ", i.e.," Britská angličtina používa čiarku aj pred aj za i.e. a e.g.
+l.146: "The algorithm interleaves" opakuje sa "computation".
+l.153: "have the loop bound 1"
+l.157,161,466: "the set of"
+l.158: ". Resets(...) represents the possible"
+l.164-165: "resets of v as the initial value and increases it by the value"
+l.175: "polyhedra, which would"
+l.180: "Figure 2a presents an example"
+l.185: "total number of iterations of l2"
+l.196-197: "and to infer the bound"
+l.207: "such as a reasoning"
+l.210-211: "these extensions, refer to"
+l.214: "based on substitution of the formal parameters"
+l.233: "Detecting"
+l.235: "interleavings among threads"
+l.243: "there are few"
+l.266: "of a lock and an unlock"
+l.267: "of a user-defined"
+l.270-271: "if available. Otherwise, the function is analysed"
+l.273: "at its leaves, as is usual in"
+l.274: "at the call"
+l.275: "So" -> "Hence" (tiež l.426)
+l.277: "on what the summaries look like"
+l.280: "analysed program and"
+l.281: "on so-called"
+l.282: "are part of the summaries"
+l.296: "We now describe"
+l.306: "the currently unlocked locks"
+l.326: "summary contains also a set"
+l.327: "dependencies using which we can", "answer question (2)."
+l.328: "called upon every lock"
+l.334: "in the function"
+l.340-341: ", with function calls (...), and with aliasing (...)" Navyše, o aký aliasing sa jedná? Pointer aliasing? Lock aliasing?
+l.343: "mentioned in the beginning"
+l.346: "at the call site"
+l.355,357: "if" by mohlo byť vysádzané pomocou \mathrm{}
+l.361: "However, a problem occurs if some of the locks which"
+l.362: "released there. This is illustrated in the example"
+l.379-380: "lock3 and lock1. Moreover, there is still"
+l.382-383: "Then we would emit a wrong dependency"
+l.392: "performed experiments using"
+l.395: "GitLab" +chýba link.
+l.400: "deadlock-free and 8"
+l.406: "memory and the CPU time"
+l.432: "adds the currently acquired"
+l.439: "for execution of"
+l.450-451: "is finding and"
+l.463: "and then to verify"
+l.485: "implementation of a static validation" validácia čoho? Kontraktov?
+l.494-497: "In the end, due to ... of Infer, our implementation ... different from [8] ... Furthermore, unlike [8] ..."
+l.500: "locks for synchronisation"
+l.501: "In Facebook Infer, there is"
+l.502: "an analysis".
+l.503: "part of RacerD"
+l.524: "execute a sequence"
+l.526: "detection of sequences"
+l.533: "lock and B is"
+l.540: "all the B sequences"
+l.544: "since locks/unlocks"
+l.546: "For instance, analysis of"
+l.554: "means discarding sequences"
+l.561,562: "used as follows. When calling"
+l.577: "working with", "distinguishing the"
+l.579: ", or extending the"
+l.580: "for synchronisation"
+l.582: "replace working with the A ... by working with sets"
+l.587-589: "violations of the atomic sequences obtained from Phase 1, the analysis looks for ..."
+l.598: "Implementation of this"
+l.600: "the results, we will tune Phase 1 as well."

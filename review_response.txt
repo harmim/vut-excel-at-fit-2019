@@ -1,0 +1,18 @@
+Děkujeme za přínosné a velmi kvalitně zpracované recenze našeho článku.
+
+Upravili (přeformulovali) jsme některé části článku, které se recenzentům
+zdály méně srozumitelné, přičemž jsme brali v potaz jejich dotazy a
+doporučení. Opravili jsme drobné chyby v anglické gramatice a drobné
+typografické chyby, na které nás upozornili recenzenti. Dle připomínek
+recenzentů jsme také přidali citace na relevantní zdroje a definovali
+nejasné termíny. Dále jsme sjednotili názvosloví určitých výrazů tak,
+aby byla zachována konzistence v rámci celého článku.
+
+Vzhledem k připomínce v jedné z recenzí jsme srozumitelněji popsali,
+které principy a které algoritmy jsou převzaté z prací jiných autorů,
+které metody jsme modifikovali a co je naše vlastní práce.
+
+Závěr jsme se rozhodli v článku neuvádět především kvůli omezenému
+rozsahu práce. A aby bylo jasnější, který z autorů se podílí na vývoji
+kterého analyzátoru, doplnili jsme jména autorů k odkazům na
+jednotlivé repositáře.

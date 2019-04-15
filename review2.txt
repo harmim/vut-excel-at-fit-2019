@@ -1,0 +1,8 @@
+Studentský (bakalářský) projekt vytváří tři statické analyzátory (meziprocedurální) jako moduly do rámce Facebook Infer. První dva jsou již implementovány a mají velmi dobré výsledky v porovnání s existujícími/srovnatelnými nástroji. Třetí je ve fázi implementace. Příspěvek popisuje přístupy a algoritmy použité v těchto analyzátorech.
+
+Není zcela zřejmé, zda studenti implementují známé principy, a nebo modifikují existující (pravděpobně), což by z práce dělalo aplikovaný (implementovaný) výzkum. Zde neumím odhadnout míru vlivu vedoucího/vedoucích práce. V každém případě jde o velmi užitečný projekt.
+
+Práce (přestože v angličtině a odborně náročná) je velmi čtivá, což nebývá běžné ani u doktorandských prací. Výsledky k prvním dvěma modulům mluví za sebe (jsou dobré či velmi dobré), i na magisterský projekt. Jako drobný nedostatek (vzhledem k omezenému rozsahu pochopitelný) vidím absenci závěru, kde by bylo zmíněno, který z modulů má aktuálně největší přínos komunitě (nebo největší oblíbenost) a zda se autoři podílí na všech modulech přibližně stejnou měrou a nebo každý vyvíjí jeden z ních.
+
+V textu jsem narazil na pár drobností, které jsou popsány v komentářích na
+http://www.fit.vutbr.cz/~krivka/dl/excel/excelfit_2019_paper_59-revzk.pdf
