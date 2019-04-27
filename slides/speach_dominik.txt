@@ -1,0 +1,49 @@
+Úvodní slajd:
+	Dobré dopoledne.
+	Já jsem Dominik Harmim a splečně s Vladimírem Marcinem a Ondřejem Pavelou
+	jsme rozšířili Facebook Infer, nástroj pro statickou analýzu programů,
+	o tři nové analyzátory. Kontrétně se jedná o detekci porušení atomicity,
+	detekci uváznutí a analyzátor pro odvození horních mezí provedení cyklů.
+
+1/9:
+	Na úvod řeknu něco o samotném nástroji Facebook Infer.
+	Jedná se o volně šířený framework pro interprocedurální statickou
+	analýzu programů. Je založený na abstraktní interpretaci.
+	Obsahuje řadu analyzátorů, které detekují např. chyby typu
+	`buffer overflow`, `thread-safety`, `null-dereferencing` nebo `memory leak`.
+	Klade důraz na škálovatelnost, která je způsobená analýzou samostatných
+	funkcí směrem od listů stromů ke kořenům. Infer provádí kompoziční analýzu
+	tím, že pro každou funkci je spočítán její souhrn (tzv. `summary`)
+	nezávisle na kontextu, ve kterém se funkce nachází. Infer provádí
+	inkrementální analýzu, tzn. analyzuje pouze jedotlivé změny kódu, namísto
+	celého projektu, což je umožňěno znovu použitím již spočítaných souhrnů
+	funkcí. Na obrázku můžeme vidět graf volání funkcí, kde z funkce `main`
+	jsou volány funkce `f` a `g`. Infer nejdříve analyzuje funkce `f` a `g`
+	a spočítá jejich souhrny. Na závěr analyzuje funkci `main` a na základě
+	souhrnů funkce `f` a `g` spočítá souhrn funkce `main`. Infer podporuje
+	analýzu programů napsaných v jazycích Java, C, C++ a Objective-C.
+
+2/9:
+	První analyzátor, Atomer, který jsme navrhli a implementovali
+	slouží pro detekci porušení atomicity. Detekuje prušení atomicity
+	pro sekvence volání funkcí. Vychází z předpokladu, že sekvence, které
+	jsou v programu jednou volány atomicky, by měly být pravděpodobně
+	volány atomicky vždy. Tento analyzátor je implementovaný pro analýzu
+	programů napsaných v jazycích C a C++ s použitím zámků typu `PThreads`.
+
+3/9:
+	Samotná analýza je rozdělena do dvou fází. V první fázi se provádí
+	detekce atomických sekvencí, jak můžeme vidět na příkladu funkce
+	`g`. V této funkci se provádí nahrazení prvku s hodnotou `42` v poli
+	`array` za prvek s hodnotou `3`. Toto nahrazení je implementováno funkcí
+	`index_of`, která získá index prvku s hodnotou `42` a pokud tento prvek
+	v poli existuje, je položka na získaném indexu nahrazena hodnotou `3`
+	funkcí `set`. Funkce `index_of` a `set` se tady volají atomicky, je to
+	zajištěno zámkem `lock`, který se zamyká a odemyká funkcemi
+	`pthread_mutex_lock` a `pthread_mutex_unlock`. Tato dvojice volání
+	se proto uloží do souhrnu funkce `g` jako atomická sekvence.
+	V druhé fázi se provádí detekce porušení atomicty na základě výsledků
+	první fáze. Můžeme vidět, že ve funkcí `h` se vyskytuje volání
+	funkcí `index_of` a `set`, tentokrát neatomicky, tj. bez zámku. Bude
+	tady nahlášeno porušení atomicty, protože ve funkci `g` byla tato
+	sekvence volána atomicky.
