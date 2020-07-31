@@ -816,42 +816,14 @@ Each summary contains also a~set of \textit{dependencies} using which we can ans
 % todo
 The above described basic computation of the dependencies would, however, be very imprecise and lead to many false alarms. The imprecision is caused by invalid locksets. The main reasons for imprecision of the locksets are imprecision in dealing with conditionals (all outcomes are considered as possible), with function calls (missing context), and with lock aliasing (any aliasing is considered to be possible).
 
-Next, as we mentioned in the beginning of this section, if a~function call appears in the analysed code, we have to apply a~summary of the function to the abstract state at the call site. Given a~callee $g$, its lockset $L_g$, unlockset $U_g$, and a~caller $f$, its lockset $L_f$, unlockset $U_f$, and dependencies $D_f$, we:
-\begin{enumerate}[label={(\arabic*)}, wide=0pt, listparindent=1.25em, parsep=0pt, topsep=0.4em]
-    \item Update the summary of $g$ by replacing formal parameters with actual ones in case that locks were passed to $g$ as parameters. In the example below, you can notice that \texttt{lock4} will be replaced by \texttt{lock2} in the summary of $g$.
-    \item Update the precondition of $f$:\\
-$\mathrm{if}(\exists l: l\in unlocked_{g}\wedge l\notin unlockset_{f})$
-    \item[]\hspace{20pt}add lock $l$ to $unlocked_{f}$\\
-$\mathrm{if}(\exists l: l\in locked_{g}\wedge l\notin lockset_{f})$
-    \item[]\hspace{20pt}add lock $l$ to $locked_{f}$
-    \item Update $D_f$ by adding new dependencies for all locks in $L_f$ with locks which were locked in $g$.
 
-    However, a~problem occurs if some of the locks which were acquired in $g$ were also released there. This is illustrated in the example below.
-    \begin{lstlisting}[mathescape=true]
-void f():
-    pthread_mutex_lock(<@\textcolor{blue}{\&lock2}@>);
-    g(<@\textcolor{blue}{\&lock2}@>);
-void g(pthread_mutex_t *lock4):
-    pthread_mutex_lock(<@\textcolor{darkgreen}{\&lock3}@>);
-    pthread_mutex_unlock(<@\textcolor{black}{lock4}@>);
-    pthread_mutex_lock(<@\textcolor{red}{\&lock1}@>);
-     $\hspace{20pt}\vdots$
-    pthread_mutex_unlock(<@\textcolor{red}{\&lock1}@>);
-    pthread_mutex_unlock(<@\textcolor{darkgreen}{\&lock3}@>);
-\end{lstlisting}
-    In that case, $L_g$ will not contain these locks, and we have no information about them. To cope with problem, we have yet another set in the summaries whose semantics is similar to the semantics of the lockset except that the unlock statement does not remove locks from it. In our example, this set would contain \texttt{lock3} and \texttt{lock1}. Moreover, there is still one problem left. What if the lock from the current lockset was unlocked in the callee before we locked another lock there? Then we would emit the wrong dependency \texttt{lock2$\rightarrow$lock1}. In order to avoid this problem, we create \texttt{unlock$\rightarrow$lock} type dependencies in the summaries, that can be used to safely determine the order of operations in the callee. This finally ensures that the only newly created correct dependency in our example will be \texttt{lock2$\rightarrow$lock3}.
-    \item Update $L_f$:
-    $L_f = (L_f \setminus U_g) \cup L_g$
-    \item Update $U_f$:
-    $U_f = (U_f \setminus L_g) \cup U_g$
-\end{enumerate}
 
 % todo maybe drop
 % \subsection{Reporting Deadlocks}
 % For deadlock detection, we use an algorithm that iterates through all the summaries and computes the transitive closure of all dependencies. It records the cyclic lock dependency and displays the results to the user for inspection. Each deadlock (between two locks) is normally reported twice, for each locking event that can be considered a~beginning of the cyclic locking dependency separately. So, in our example in Listing~\ref{deadlock_example}, we will report the deadlock for the first time in function \texttt{thread1} and for the second time in function \texttt{thread2}.
 
 \subsection{Experimental Evaluation}
-We performed experiments using a~benchmark of 1002 concurrent C~programs derived from the Debian GNU Linux distribution.The entire benchmark is available online at GitLab\footnote{\url{https://bit.ly/2WJBQLQ}}. These programs were originally used for an experimental evaluation of Daniel Kroening's static deadlock analyser~\cite{cprover} implemented in the CPROVER framework.
+We performed experiments using a~benchmark of 1002 concurrent C~programs derived from the Debian GNU Linux distribution.The entire benchmark is available online at GitLab. These programs were originally used for an experimental evaluation of Daniel Kroening's static deadlock analyser~\cite{cprover} implemented in the CPROVER framework.
 
 This benchmark set consists of 11.4 MLOC. Of all the programs, 994 are deadlock-free and 8 of them contain a~deadlock. Our experiments were run on a~CORE i7-7700HQ processor at 2.80\,GHz running Ubuntu 18.04 with 64-bit binaries. The CPROVER experiments were run on a~Xeon X5667 at 3\,GHz running Fedora 20 with 64-bit binaries. In case of CPROVER, the memory and the CPU time were restricted to 24\,GB and 1800 seconds per benchmark, respectively.
 
